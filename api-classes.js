@@ -221,8 +221,6 @@ class User {
       }
     });
 
-    console.log(response.data);
-
     this.name = response.data.user.name; //Update name if any changes
     this.createdAt = response.data.createdAt;
     this.updatedAt = response.data.updatedAt;
@@ -245,10 +243,6 @@ class User {
     });
 
     await this.updateUserData();
-    // console.log(this);
-
-// TODO: NEED TO UPDATE STARS if page loads and stars are favorited
-
     return this;
   }
 }

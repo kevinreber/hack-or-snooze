@@ -155,13 +155,14 @@ $(async function () {
    */
 
   function generateStoryHTML(story) {
-    let hostName = getHostName(story.url);
+    const hostName = getHostName(story.url);
+    const starType = checkCurrentUsersFavorites(story.storyId);
 
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
         <span class="star">
-          <i class="far fa-star"></i>
+          <i class="${starType} fa-star"></i>
         </span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
@@ -175,10 +176,19 @@ $(async function () {
     return storyMarkup;
   }
 
+  // Check if story is in current users favorite
+  function checkCurrentUsersFavorites(storyId) {
+    const idList = [];
+    for (let favorite of currentUser.favorites) {
+      idList.push(favorite.storyId);
+    }
+    return idList.includes(storyId) ? 'fas' : 'far';
+  }
+
   // Handle when user favorites article
   $('.fa-star').on('click', handleFavorites);
 
-  // Toggle star for user's favoriters
+  // Toggle star for user's favorites
   function handleFavorites(e) {
     $(this).toggleClass('far fas');
 
