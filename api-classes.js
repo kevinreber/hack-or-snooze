@@ -247,7 +247,7 @@ class User {
     await this.updateUserData();
     // console.log(this);
 
-// NEED TO UPDATE STARS if page loads and stars are favorited
+// TODO: NEED TO UPDATE STARS if page loads and stars are favorited
 
     return this;
   }
