@@ -156,7 +156,7 @@ $(async function () {
 
   function generateStoryHTML(story) {
     const hostName = getHostName(story.url);
-    const starType = checkCurrentUsersFavorites(story.storyId);
+    const starType = usersFavoriteIds(story.storyId)
 
     // render story markup
     const storyMarkup = $(`
@@ -176,8 +176,8 @@ $(async function () {
     return storyMarkup;
   }
 
-  // Check if story is in current users favorite
-  function checkCurrentUsersFavorites(storyId) {
+  // Returns star type if story is favorited by user
+  function usersFavoriteIds(storyId) {
     const idList = [];
     for (let favorite of currentUser.favorites) {
       idList.push(favorite.storyId);
@@ -186,7 +186,7 @@ $(async function () {
   }
 
   // Handle when user favorites article
-  $('.fa-star').on('click', handleFavorites);
+  $('body').on('click', '.fa-star', handleFavorites);
 
   // Toggle star for user's favorites
   function handleFavorites(e) {
@@ -201,6 +201,33 @@ $(async function () {
     }
     if (classList.contains('fas')) {
       currentUser.updateFavorites(storyId, "POST"); //currentUser.updateFavorites b/c each user has their own functions
+    }
+  }
+
+  const $favoritedArticles = $('#favorited-articles');
+
+  // Event handler when user wants to see favorites
+  $('#nav-favorites').on('click', function () {
+    hideElements();
+    if (currentUser) {
+      generateFavorites();
+      $favoritedArticles.show();
+    };
+  });
+
+  // Display favorites
+  function generateFavorites() {
+    // Clear favorite articles
+    $favoritedArticles.empty();
+
+    // If User doesn't have any favorite articles
+    if (currentUser.favorites.length === 0) {
+      $favoritedArticles.append(`<h3>No favorited articles!</h3>`);
+    } else {
+      for (favorite of currentUser.favorites) {
+        let html = generateStoryHTML(favorite);
+        $favoritedArticles.append(html);
+      }
     }
   }
 
