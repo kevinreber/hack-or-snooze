@@ -109,6 +109,20 @@ class StoryList {
     // Return object to generateStoryHTML and prepend to $allStoriesList 
     return newStory;
   }
+
+  // Delete story from Story List
+  async deleteStory(user, storyId) {
+    await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      params: {
+        token: user.loginToken
+      }
+    });
+
+    this.stories = this.stories.filter(story => story.storyId !== storyId);
+    user.updateUserData(); // Update user's stories
+  }
 }
 
 

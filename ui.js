@@ -192,6 +192,21 @@ $(async function () {
     return storyList.includes(storyId) ? true : false;
   }
 
+  // Handle when user deletes story from Story List
+  $('body').on('click', '.trash-can', deleteUserStory);
+
+  async function deleteUserStory() {
+    const storyId = $(this).closest('li').attr('id');
+    await storyList.deleteStory(currentUser, storyId); // await to wait for updated API
+
+    // Update story list
+    await generateStories();
+
+    // Hide all elements but story list
+    hideElements();
+    $allStoriesList.show();
+  }
+
   // Returns star type if story is favorited by user
   function usersFavoriteIds(storyId) {
     const idList = [];
@@ -300,8 +315,9 @@ $(async function () {
   function showNavForLoggedInUser() {
     $navLogin.hide();
     $('#user-profile').hide(); // Hide user-profile on log in
-    $('.main-nav-links').toggleClass('hidden'); // Toggles links when user logs in 
-    $navLogOut.show();
+    $('.main-nav-links').toggleClass('hidden'); // Toggles links when user logs in
+    const html = $(`<small>${currentUser.username} (logout)</small>`);
+    $navLogOut.append(html).show();
   }
 
   /* simple function to pull the hostname from a URL */
