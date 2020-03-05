@@ -8,6 +8,9 @@ Clone of the popular news-aggregator site Hacker News. Allow users to create acc
 
 [LIVE DEMO](https://kevinreber.github.io/hack-or-snooze/)
 
+## Axios Article
+[Axios](https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/)
+
 ## Further Study
 - Add some error handling for when a username has already been taken or if credentials are incorrect!
 - Allow users to edit stories they have created.
