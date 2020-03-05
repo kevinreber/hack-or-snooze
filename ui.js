@@ -193,9 +193,7 @@ $(async function () {
   }
 
   // Handle when user deletes story from Story List
-  $('body').on('click', '.trash-can', deleteUserStory);
-
-  async function deleteUserStory() {
+  $('body').on('click', '.trash-can', async function () {
     const storyId = $(this).closest('li').attr('id');
     await storyList.deleteStory(currentUser, storyId); // await to wait for updated API
 
@@ -205,7 +203,7 @@ $(async function () {
     // Hide all elements but story list
     hideElements();
     $allStoriesList.show();
-  }
+  });
 
   // Returns star type if story is favorited by user
   function usersFavoriteIds(storyId) {
@@ -263,6 +261,34 @@ $(async function () {
     }
   }
 
+  // Event handler when user wants to see own stories
+  $('#nav-my-stories').on('click', function () {
+    // Hide all elements
+    hideElements();
+
+    // If user is logged in generate and show user's favorites
+    if (currentUser) {
+      generateUsersOwnStories();
+      $ownStories.show();
+    };
+  });
+
+  // Generates list of users posted stories
+  function generateUsersOwnStories() {
+    // Clear own stories
+    $ownStories.empty();
+
+    // If user doesn't have any stories
+    if (currentUser.ownStories.length === 0) {
+      $ownStories.append(`<h3>You have not posted any articles!</h3>`);
+    } else {
+      for (let story of currentUser.ownStories) {
+        let html = generateStoryHTML(story);
+        $ownStories.append(html);
+      }
+    }
+  }
+
   /* hide all elements in elementsArr */
 
   function hideElements() {
@@ -271,6 +297,7 @@ $(async function () {
       $allStoriesList,
       $filteredArticles,
       $ownStories,
+      $favoritedArticles,
       $loginForm,
       $createAccountForm
     ];
@@ -309,6 +336,9 @@ $(async function () {
     // Reset form
     $submitForm.slideUp("slow");
     $submitForm.trigger("reset");
+
+    // Update user's story list
+    generateUsersOwnStories();
   });
 
   // Toggles what User can see when logged in
