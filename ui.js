@@ -3,6 +3,7 @@ $(async function () {
   const $allStoriesList = $("#all-articles-list");
   const $submitForm = $("#submit-form");
   const $filteredArticles = $("#filtered-articles");
+  const $favoritedArticles = $('#favorited-articles');
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
   const $ownStories = $("#my-articles");
@@ -157,10 +158,16 @@ $(async function () {
   function generateStoryHTML(story) {
     const hostName = getHostName(story.url);
     const starType = usersFavoriteIds(story.storyId)
+    const trashIcon = isUsersStory(story.storyId) ? `
+    <span class="trash-can">
+      <i class="fas fa-trash-alt"></i>
+    </span>` : "";
 
     // render story markup
+    // $(`<html></html>`) builds a jQuery object
     const storyMarkup = $(`
       <li id="${story.storyId}">
+      ${trashIcon}
         <span class="star">
           <i class="${starType} fa-star"></i>
         </span>
@@ -173,7 +180,16 @@ $(async function () {
       </li>
     `);
 
-    return storyMarkup;
+    return storyMarkup; // Returns a jQuery object
+  }
+
+  // Checks if story is user's story
+  function isUsersStory(storyId) {
+    const storyList = [];
+    for (let stories of currentUser.ownStories) {
+      storyList.push(stories.storyId);
+    }
+    return storyList.includes(storyId) ? true : false;
   }
 
   // Returns star type if story is favorited by user
@@ -186,10 +202,10 @@ $(async function () {
   }
 
   // Handle when user favorites article
-  $('body').on('click', '.fa-star', handleFavorites);
+  $('body').on('click', '.fa-star', toggleFavorites);
 
   // Toggle star for user's favorites
-  function handleFavorites(e) {
+  function toggleFavorites(e) {
     $(this).toggleClass('far fas');
 
     // Update API of users favorites
@@ -204,11 +220,12 @@ $(async function () {
     }
   }
 
-  const $favoritedArticles = $('#favorited-articles');
-
   // Event handler when user wants to see favorites
   $('#nav-favorites').on('click', function () {
+    // Hide all elements
     hideElements();
+
+    // If user is logged in generate and show user's favorites
     if (currentUser) {
       generateFavorites();
       $favoritedArticles.show();
@@ -277,7 +294,7 @@ $(async function () {
     // Reset form
     $submitForm.slideUp("slow");
     $submitForm.trigger("reset");
-  })
+  });
 
   // Toggles what User can see when logged in
   function showNavForLoggedInUser() {
