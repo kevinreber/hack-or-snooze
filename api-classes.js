@@ -284,62 +284,67 @@ class Story {
 }
 
 
-//STEP 2 - TOKEN 
-// {
-// "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RyZWVieiIsImlhdCI6MTU4MzAyNjU3Nn0.HNOc9DzYEgTzb6gRQ9xQkq7Il3rK7g05hLq2buaPVX0", 
-//  "user": {
-//    "createdAt": "2020-03-01T01:36:16.765Z",
-//    "favorites": [],
-//    "name": "Test User",
-//    "stories": [],
-//    "updatedAt": "2020-03-01T01:36:16.765Z",
-//    "username": "testreebz"
-//  }
-// }
+/*
+*TERMINAL CURL TESTS
 
-//STEP 3 - MAKE STORY
-// {
-//   "story": {
-//     "author": "Elie Schoppik",
-//     "createdAt": "2020-03-01T01:46:06.917Z",
-//     "storyId": "364621ba-a91d-4afe-ad93-bb368bf8ae6b",
-//     "title": "Four Tips for Moving Faster as a Developer",
-//     "updatedAt": "2020-03-01T01:46:06.917Z",
-//     "url": "https://www.rithmschool.com/blog/developer-productivity",
-//     "username": "testreebz"
-//   }
-// }
+STEP 2 - TOKEN 
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RyZWVieiIsImlhdCI6MTU4MzAyNjU3Nn0.HNOc9DzYEgTzb6gRQ9xQkq7Il3rK7g05hLq2buaPVX0", 
+ "user": {
+   "createdAt": "2020-03-01T01:36:16.765Z",
+   "favorites": [],
+   "name": "Test User",
+   "stories": [],
+   "updatedAt": "2020-03-01T01:36:16.765Z",
+   "username": "testreebz"
+ }
+}
 
-// REEBEEZIE
-// {
-//   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E",
-//   "user": {
-//     "createdAt": "2020-03-01T02:08:47.592Z",
-//     "favorites": [],
-//     "name": "Test User",
-//     "stories": [],
-//     "updatedAt": "2020-03-01T02:08:47.592Z",
-//     "username": "reebeezie"
-//   }
-// }
+STEP 3 - MAKE STORY
+{
+  "story": {
+    "author": "Elie Schoppik",
+    "createdAt": "2020-03-01T01:46:06.917Z",
+    "storyId": "364621ba-a91d-4afe-ad93-bb368bf8ae6b",
+    "title": "Four Tips for Moving Faster as a Developer",
+    "updatedAt": "2020-03-01T01:46:06.917Z",
+    "url": "https://www.rithmschool.com/blog/developer-productivity",
+    "username": "testreebz"
+  }
+}
+
+REEBEEZIE
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E",
+  "user": {
+    "createdAt": "2020-03-01T02:08:47.592Z",
+    "favorites": [],
+    "name": "Test User",
+    "stories": [],
+    "updatedAt": "2020-03-01T02:08:47.592Z",
+    "username": "reebeezie"
+  }
+}
 
 
-// TERMINAL
-// curl -i \
-//      -H "Content-Type: application/json" \
-//      -X POST \
-//      -d '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E", "story": {"author":"Reber Fever!","title": "My GitHub =]", "url": "https://github.com/kevinreber"}}' \
-//       https://hack-or-snooze-v3.herokuapp.com/stories
+TERMINAL
+curl -i \
+     -H "Content-Type: application/json" \
+     -X POST \
+     -d '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E", "story": {"author":"Reber Fever!","title": "My GitHub =]", "url": "https://github.com/kevinreber"}}' \
+      https://hack-or-snooze-v3.herokuapp.com/stories
 
-// STORY POSTED
-// {
-//   "story": {
-//     "author": "Reber Fever!",
-//     "createdAt": "2020-03-01T02:21:17.896Z",
-//     "storyId": "fb685d70-638c-4222-8e16-b3bc96ba08cb",
-//     "title": "My GitHub =]",
-//     "updatedAt": "2020-03-01T02:21:17.896Z",
-//     "url": "https://github.com/kevinreber",
-//     "username": "reebeezie"
-//   }
-// }
+STORY POSTED
+{
+  "story": {
+    "author": "Reber Fever!",
+    "createdAt": "2020-03-01T02:21:17.896Z",
+    "storyId": "fb685d70-638c-4222-8e16-b3bc96ba08cb",
+    "title": "My GitHub =]",
+    "updatedAt": "2020-03-01T02:21:17.896Z",
+    "url": "https://github.com/kevinreber",
+    "username": "reebeezie"
+  }
+}
+
+*/
