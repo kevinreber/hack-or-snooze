@@ -16,7 +16,44 @@ $(async function () {
   // global currentUser variable
   let currentUser = null;
 
+
+
+  /*********************************************************
+   * Log In UI                                             *
+   ********************************************************/
+
+  // On page load, check localStorage if user is logged in 
   await checkIfLoggedIn();
+
+  /**
+   * On page load, checks local storage to see if the user is already logged in.
+   * Renders page information accordingly.
+   */
+
+  async function checkIfLoggedIn() {
+    // let's see if we're logged in
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+
+    // if there is a token in localStorage, call User.getLoggedInUser
+    //  to get an instance of User with the right details
+    //  this is designed to run once, on page load
+    currentUser = await User.getLoggedInUser(token, username);
+    await generateStories();
+
+    if (currentUser) {
+      showNavForLoggedInUser();
+    }
+  }
+
+  // Toggles what User can see when logged in
+  function showNavForLoggedInUser() {
+    $navLogin.hide();
+    $('#user-profile').hide(); // Hide user-profile on log in
+    $('.main-nav-links').toggleClass('hidden'); // Toggles links when user logs in
+    const html = $(`<small>${currentUser.username} (logout)</small>`);
+    $navLogOut.append(html).show();
+  }
 
   /**
    * Event listener for logging in.
@@ -38,6 +75,15 @@ $(async function () {
     loginAndSubmitForm();
   });
 
+  /* sync current user information to localStorage */
+
+  function syncCurrentUserToLocalStorage() {
+    if (currentUser) {
+      localStorage.setItem("token", currentUser.loginToken);
+      localStorage.setItem("username", currentUser.username);
+    }
+  }
+
   /**
    * Event listener for signing up.
    *  If successfully we will setup a new user instance
@@ -47,9 +93,9 @@ $(async function () {
     evt.preventDefault(); // no page refresh
 
     // grab the required fields
-    let name = $("#create-account-name").val();
-    let username = $("#create-account-username").val();
-    let password = $("#create-account-password").val();
+    const name = $("#create-account-name").val();
+    const username = $("#create-account-username").val();
+    const password = $("#create-account-password").val();
 
     // call the create method, which calls the API and then builds a new user instance
     const newUser = await User.create(username, password, name);
@@ -65,6 +111,7 @@ $(async function () {
   $navLogOut.on("click", function () {
     // empty out local storage
     localStorage.clear();
+
     // refresh the page, clearing memory
     location.reload();
   });
@@ -91,27 +138,6 @@ $(async function () {
   });
 
   /**
-   * On page load, checks local storage to see if the user is already logged in.
-   * Renders page information accordingly.
-   */
-
-  async function checkIfLoggedIn() {
-    // let's see if we're logged in
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
-
-    // if there is a token in localStorage, call User.getLoggedInUser
-    //  to get an instance of User with the right details
-    //  this is designed to run once, on page load
-    currentUser = await User.getLoggedInUser(token, username);
-    await generateStories();
-
-    if (currentUser) {
-      showNavForLoggedInUser();
-    }
-  }
-
-  /**
    * A rendering function to run to reset the forms and hide the login info
    */
 
@@ -130,6 +156,11 @@ $(async function () {
     // update the navigation bar
     showNavForLoggedInUser();
   }
+
+
+  /*********************************************************
+   * Stories UI                                            *
+   ********************************************************/
 
   /**
    * A rendering function to call the StoryList.getStories static method,
@@ -157,7 +188,7 @@ $(async function () {
 
   function generateStoryHTML(story) {
     const hostName = getHostName(story.url);
-    const starType = usersFavoriteIds(story.storyId)
+    const starType = isUsersFavorite(story.storyId) ? 'fas' : 'far';
     const trashIcon = isUsersStory(story.storyId) ? `
     <span class="trash-can">
       <i class="fas fa-trash-alt"></i>
@@ -183,13 +214,45 @@ $(async function () {
     return storyMarkup; // Returns a jQuery object
   }
 
+  /* simple function to pull the hostname from a URL */
+
+  function getHostName(url) {
+    let hostName;
+    if (url.indexOf("://") > -1) {
+      hostName = url.split("/")[2];
+    } else {
+      hostName = url.split("/")[0];
+    }
+    if (hostName.slice(0, 4) === "www.") {
+      hostName = hostName.slice(4);
+    }
+    return hostName;
+  }
+
   // Checks if story is user's story
   function isUsersStory(storyId) {
     const storyList = [];
-    for (let stories of currentUser.ownStories) {
-      storyList.push(stories.storyId);
+
+    // First check if user is logged in
+    if (currentUser) {
+      for (let stories of currentUser.ownStories) {
+        storyList.push(stories.storyId);
+      }
     }
     return storyList.includes(storyId) ? true : false;
+  }
+
+  // Returns star type if story is favorited by user
+  function isUsersFavorite(storyId) {
+    const idList = [];
+
+    // First check if user is logged in
+    if (currentUser) {
+      for (let favorite of currentUser.favorites) {
+        idList.push(favorite.storyId);
+      }
+    }
+    return idList.includes(storyId);
   }
 
   // Handle when user deletes story from Story List
@@ -204,15 +267,6 @@ $(async function () {
     hideElements();
     $allStoriesList.show();
   });
-
-  // Returns star type if story is favorited by user
-  function usersFavoriteIds(storyId) {
-    const idList = [];
-    for (let favorite of currentUser.favorites) {
-      idList.push(favorite.storyId);
-    }
-    return idList.includes(storyId) ? 'fas' : 'far';
-  }
 
   // Handle when user favorites article
   $('body').on('click', '.fa-star', toggleFavorites);
@@ -289,21 +343,6 @@ $(async function () {
     }
   }
 
-  /* hide all elements in elementsArr */
-
-  function hideElements() {
-    const elementsArr = [
-      $submitForm,
-      $allStoriesList,
-      $filteredArticles,
-      $ownStories,
-      $favoritedArticles,
-      $loginForm,
-      $createAccountForm
-    ];
-    elementsArr.forEach($elem => $elem.hide());
-  }
-
   // Toggle submit form
   $('#nav-submit').on('click', () => {
     // $submitForm.toggleClass('hidden');
@@ -341,36 +380,19 @@ $(async function () {
     generateUsersOwnStories();
   });
 
-  // Toggles what User can see when logged in
-  function showNavForLoggedInUser() {
-    $navLogin.hide();
-    $('#user-profile').hide(); // Hide user-profile on log in
-    $('.main-nav-links').toggleClass('hidden'); // Toggles links when user logs in
-    const html = $(`<small>${currentUser.username} (logout)</small>`);
-    $navLogOut.append(html).show();
+  /* hide all elements in elementsArr */
+
+  function hideElements() {
+    const elementsArr = [
+      $submitForm,
+      $allStoriesList,
+      $filteredArticles,
+      $ownStories,
+      $favoritedArticles,
+      $loginForm,
+      $createAccountForm
+    ];
+    elementsArr.forEach($elem => $elem.hide());
   }
 
-  /* simple function to pull the hostname from a URL */
-
-  function getHostName(url) {
-    let hostName;
-    if (url.indexOf("://") > -1) {
-      hostName = url.split("/")[2];
-    } else {
-      hostName = url.split("/")[0];
-    }
-    if (hostName.slice(0, 4) === "www.") {
-      hostName = hostName.slice(4);
-    }
-    return hostName;
-  }
-
-  /* sync current user information to localStorage */
-
-  function syncCurrentUserToLocalStorage() {
-    if (currentUser) {
-      localStorage.setItem("token", currentUser.loginToken);
-      localStorage.setItem("username", currentUser.username);
-    }
-  }
 });

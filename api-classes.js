@@ -19,18 +19,8 @@ class StoryList {
    *  - returns the StoryList instance.*
    */
 
-  // TODO: Note the presence of `static` keyword: this indicates that getStories
   // is **not** an instance method. Rather, it is a method that is called on the
   // class directly. Why doesn't it make sense for getStories to be an instance method?
-
-  // Class is a blueprint- like a template
-  // exactly what a object can have 
-  // like a house and how to build it
-  // object will have same variables
-
-  // instance is built off a class
-  //static does not belong to an instance, only a class
-  //can only be used once
 
   static async getStories() {
     // query the /stories endpoint (no auth required)
@@ -51,36 +41,6 @@ class StoryList {
    *
    * Returns the new story object
    */
-
-  /**
-   * 
-  TERMINAL
-  curl -i \
-      -H "Content-Type: application/json" \
-      -X POST \
-      -d '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E", 
-          "story": {
-            "author":"Reber Fever!",
-            "title": "My GitHub =]", 
-            "url": "https://github.com/kevinreber"
-          }
-        }' \
-        https://hack-or-snooze-v3.herokuapp.com/stories
-
-  STORY POSTED
-  {
-    "story": {
-      "author": "Reber Fever!",
-      "createdAt": "2020-03-01T02:21:17.896Z",
-      "storyId": "fb685d70-638c-4222-8e16-b3bc96ba08cb",
-      "title": "My GitHub =]",
-      "updatedAt": "2020-03-01T02:21:17.896Z",
-      "url": "https://github.com/kevinreber",
-      "username": "reebeezie"
-    }
-  }
-  *
-  **/
 
   async addStory(user, newStory) {
     // this function should return the newly created story so it can be used in
@@ -144,15 +104,6 @@ class User {
     this.ownStories = [];
   }
 
-  /* Create and return a new user.
-   *
-   * Makes POST request to API and returns newly-created user.
-   *
-   * - username: a new username
-   * - password: a new password
-   * - name: the user's full name
-   */
-
   static async create(username, password, name) {
     const response = await axios.post(`${BASE_URL}/signup`, {
       user: {
@@ -172,9 +123,6 @@ class User {
   }
 
   /* Login in user and return user instance.
-
-   * - username: an existing user's username
-   * - password: an existing user's password
    */
 
   static async login(username, password) {
@@ -282,69 +230,3 @@ class Story {
     this.updatedAt = storyObj.updatedAt;
   }
 }
-
-
-/*
-*TERMINAL CURL TESTS
-
-STEP 2 - TOKEN 
-{
-"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RyZWVieiIsImlhdCI6MTU4MzAyNjU3Nn0.HNOc9DzYEgTzb6gRQ9xQkq7Il3rK7g05hLq2buaPVX0", 
- "user": {
-   "createdAt": "2020-03-01T01:36:16.765Z",
-   "favorites": [],
-   "name": "Test User",
-   "stories": [],
-   "updatedAt": "2020-03-01T01:36:16.765Z",
-   "username": "testreebz"
- }
-}
-
-STEP 3 - MAKE STORY
-{
-  "story": {
-    "author": "Elie Schoppik",
-    "createdAt": "2020-03-01T01:46:06.917Z",
-    "storyId": "364621ba-a91d-4afe-ad93-bb368bf8ae6b",
-    "title": "Four Tips for Moving Faster as a Developer",
-    "updatedAt": "2020-03-01T01:46:06.917Z",
-    "url": "https://www.rithmschool.com/blog/developer-productivity",
-    "username": "testreebz"
-  }
-}
-
-REEBEEZIE
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E",
-  "user": {
-    "createdAt": "2020-03-01T02:08:47.592Z",
-    "favorites": [],
-    "name": "Test User",
-    "stories": [],
-    "updatedAt": "2020-03-01T02:08:47.592Z",
-    "username": "reebeezie"
-  }
-}
-
-
-TERMINAL
-curl -i \
-     -H "Content-Type: application/json" \
-     -X POST \
-     -d '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlZWJlZXppZSIsImlhdCI6MTU4MzAyODUyN30.KR9WAG2t4cVo_sPbXiyOKSq5WE_XfRLsRHVL-IfIT4E", "story": {"author":"Reber Fever!","title": "My GitHub =]", "url": "https://github.com/kevinreber"}}' \
-      https://hack-or-snooze-v3.herokuapp.com/stories
-
-STORY POSTED
-{
-  "story": {
-    "author": "Reber Fever!",
-    "createdAt": "2020-03-01T02:21:17.896Z",
-    "storyId": "fb685d70-638c-4222-8e16-b3bc96ba08cb",
-    "title": "My GitHub =]",
-    "updatedAt": "2020-03-01T02:21:17.896Z",
-    "url": "https://github.com/kevinreber",
-    "username": "reebeezie"
-  }
-}
-
-*/
