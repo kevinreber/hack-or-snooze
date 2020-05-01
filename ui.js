@@ -16,8 +16,6 @@ $(async function () {
   // global currentUser variable
   let currentUser = null;
 
-
-
   /*********************************************************
    * Log In UI                                             *
    ********************************************************/

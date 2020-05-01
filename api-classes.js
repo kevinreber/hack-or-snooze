@@ -105,7 +105,7 @@ class User {
   }
 
   static async create(username, password, name) {
-    const response = await axios.post(`${BASE_URL}/signup`, {
+    const response = await axios.post(`${BASE_URL}/users`, {
       user: {
         username,
         password,
